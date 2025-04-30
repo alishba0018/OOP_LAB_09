@@ -1,0 +1,60 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class PaymentMethod {
+public:
+    virtual bool processPayment(double amount) = 0; // Pure virtual function
+    virtual ~PaymentMethod() {}
+};
+
+class CreditCard : public PaymentMethod {
+private:
+    string cardNumber;
+public:
+    CreditCard(const string& number) {
+        cardNumber = number;
+    }
+    bool processPayment(double amount) override {
+        cout << "Processing credit card payment of $" << amount << "...\n";
+        if (cardNumber.length() == 16) {
+            cout << "Credit card payment approved.\n";
+            return true;
+        } else {
+            cout << "Invalid credit card number.\n";
+            return false;
+        }
+    }
+};
+
+class DigitalWallet : public PaymentMethod {
+private:
+    double balance;
+public:
+    DigitalWallet(double initialBalance) {
+        balance = initialBalance;
+    }
+    bool processPayment(double amount) override {
+        cout << "Processing wallet payment of $" << amount << "...\n";
+        if (balance >= amount) {
+            balance -= amount;
+            cout << "Wallet payment successful. Remaining balance: $" << balance << "\n";
+            return true;
+        } else {
+            cout << "Insufficient balance in wallet.\n";
+            return false;
+        }
+    }
+};
+
+int main() {
+    CreditCard cc("1234567812345678");
+    DigitalWallet wallet(100.00);
+    cout << "Using Credit Card \n";
+    cc.processPayment(40.0);
+    cout << "Using Digital Wallet \n";
+    wallet.processPayment(60.0);
+    cout << "Trying to Overpay with Wallet \n";
+    wallet.processPayment(50.0); 
+    return 0;
+}
